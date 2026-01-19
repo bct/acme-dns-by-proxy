@@ -53,7 +53,7 @@ in
     services.openssh = {
       enable = true;
       extraConfig = ''
-        Match user acme-dns-proxy
+        Match user ${cfg.user}
           PasswordAuthentication no
           KbdInteractiveAuthentication no
           ChallengeResponseAuthentication no
@@ -61,7 +61,7 @@ in
       '';
     };
 
-    users.users.acme-dns-proxy = {
+    users.users.${cfg.user} = {
       isSystemUser = true;
       group = "acme-dns-proxy";
 

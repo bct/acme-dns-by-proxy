@@ -4,6 +4,16 @@
   options.services.acme-dns-proxy-host = with lib; {
     enable = mkEnableOption "acme-dns-proxy-host";
 
+    user = mkOption {
+      type = lib.types.str;
+      default = "acme-dns-proxy";
+      description = ''
+        The user that will execute the proxied commands.
+
+        This module creates and configures this user. The user should not be used for anything else.
+      '';
+    };
+
     domains = mkOption {
       type = types.listOf (
         types.submodule (

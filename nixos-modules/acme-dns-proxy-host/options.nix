@@ -28,7 +28,7 @@
               };
 
               pubKey = mkOption {
-                type = types.str;
+                type = types.singleLineStr;
                 description = ''
                   An SSH client public key that is authorized to use this DNS challenge proxy.
                 '';

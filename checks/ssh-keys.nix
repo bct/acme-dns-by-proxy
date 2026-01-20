@@ -15,4 +15,18 @@ pkgs: {
   '';
 
   snakeOilPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDPQXmEVMVLmeFRyafKMVWgPDkv8/uRBTwmcEDatZzMD snakeoil";
+
+  # This key was generated specifically for this purpose using:
+  #   cd $(mktemp -d) && ssh-keygen -q -t ed25519 -N "" -f ssh_host
+  hostPrivateKey = pkgs.writeText "hostkey.snakeoil" ''
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACDzPXHADXsSbKkVPTPA2xaJjPAwU8GirujXbWsiUzec0gAAAJBib/s4Ym/7
+    OAAAAAtzc2gtZWQyNTUxOQAAACDzPXHADXsSbKkVPTPA2xaJjPAwU8GirujXbWsiUzec0g
+    AAAEDcQs6LR8V5Fp+09jOW2Cnbe0F0oRaZL7gYZ67nqR2HFvM9ccANexJsqRU9M8DbFomM
+    8DBTwaKu6NdtayJTN5zSAAAADWJjdEBhcXVpbG9uaWE=
+    -----END OPENSSH PRIVATE KEY-----
+  '';
+
+  hostPublicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPM9ccANexJsqRU9M8DbFomM8DBTwaKu6NdtayJTN5zS host";
 }

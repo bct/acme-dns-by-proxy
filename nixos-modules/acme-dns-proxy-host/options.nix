@@ -1,6 +1,5 @@
 { lib, ... }:
 {
-
   options.services.acme-dns-proxy-host = with lib; {
     enable = mkEnableOption "acme-dns-proxy-host";
 

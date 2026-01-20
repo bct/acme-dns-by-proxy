@@ -1,4 +1,16 @@
-{ self, pkgs }:
+# This test validates the acme-dns-proxy host module access controls.
+#
+# There are 2 hosts here:
+#
+# - "host" hosts an acme-dns-proxy
+# - "client" attempts to execute commands on the acme-dns-proxy account.
+#
+# The test passes iff authorized clients can execute authorized commands.
+{
+  self,
+  pkgs,
+  nixpkgs,
+}:
 let
   inherit (import ./ssh-keys.nix pkgs) snakeOilPrivateKey snakeOilPublicKey;
 in

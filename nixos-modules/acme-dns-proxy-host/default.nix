@@ -52,7 +52,8 @@ in
   config = lib.mkIf cfg.enable {
     services.openssh = {
       enable = true;
-      extraConfig = ''
+      # Match blocks need to go at the end of the file.
+      extraConfig = lib.mkAfter ''
         Match user ${cfg.user}
           PasswordAuthentication no
           KbdInteractiveAuthentication no

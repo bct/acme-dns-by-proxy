@@ -19,6 +19,7 @@
     {
       nixosModules = {
         host = ./nixos-modules/acme-dns-proxy-host;
+        client = ./nixos-modules/acme-dns-proxy-client;
       };
 
       packages = forAllSystems (
@@ -35,11 +36,12 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          checkArgs = { inherit self pkgs nixpkgs; };
         in
         {
-          acme-dns-proxy-host = pkgs.testers.runNixOSTest (
-            import ./checks/acme-dns-proxy-host.nix { inherit self pkgs; }
-          );
+          acme-dns-proxy-host = pkgs.testers.runNixOSTest (import ./checks/acme-dns-proxy-host.nix checkArgs);
+
+          acme-dns-proxy-e2e = pkgs.testers.runNixOSTest (import ./checks/acme-dns-proxy-e2e.nix checkArgs);
         }
       );
     };

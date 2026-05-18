@@ -44,5 +44,20 @@
           acme-dns-proxy-e2e = pkgs.testers.runNixOSTest (import ./checks/acme-dns-proxy-e2e.nix checkArgs);
         }
       );
+
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+
+        {
+          default = pkgs.mkShell {
+            buildInputs = [
+              pkgs.go
+            ];
+          };
+        }
+      );
     };
 }

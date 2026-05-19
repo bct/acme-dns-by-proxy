@@ -18,8 +18,8 @@
     in
     {
       nixosModules = {
-        host = ./nixos-modules/acme-dns-proxy-host;
-        client = ./nixos-modules/acme-dns-proxy-client;
+        host = import ./nixos-modules/acme-dns-proxy-host self;
+        client = import ./nixos-modules/acme-dns-proxy-client self;
       };
 
       packages = forAllSystems (

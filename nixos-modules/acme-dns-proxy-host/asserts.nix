@@ -1,6 +1,16 @@
 { lib, config, ... }:
 let
-  authorizedKeys = map (domain: domain.pubKey) config.services.acme-dns-proxy-host.domains;
+  cfg = config.services.acme-dns-proxy-host;
+  authorizedKeys = map (domain: domain.pubKey) cfg.domains;
+
+  mkProviderAssertions = domainCfg: {
+    assertion =
+      lib.count isNull [
+        domainCfg.dnsProvider
+        domainCfg.execCommand
+      ] == 1;
+    message = "${domainCfg.domain}: exactly one of dnsProvider or execCommand must be set.";
+  };
 in
 {
   # this restriction is a little silly, but it simplifies the implementation:
@@ -11,5 +21,6 @@ in
       assertion = lib.allUnique authorizedKeys;
       message = "services.acme-dns-proxy-host.domains.*.pubKey must be unique";
     }
-  ];
+  ]
+  ++ lib.map mkProviderAssertions cfg.domains;
 }

@@ -1,3 +1,5 @@
+self:
+
 {
   lib,
   pkgs,

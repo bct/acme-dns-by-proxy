@@ -1,3 +1,5 @@
+self:
+
 {
   lib,
   pkgs,
@@ -6,14 +8,22 @@
 }:
 let
   cfg = config.services.acme-dns-proxy-host;
-
+  flakePackages = self.packages.${pkgs.stdenv.hostPlatform.system};
   mkCommand =
     {
       domain,
       environmentFile,
       execCommand,
+      dnsProvider,
       ...
     }:
+    let
+      doModifyDns =
+        if execCommand != null then
+          execCommand
+        else
+          "${flakePackages.lego-dns-provider}/bin/lego-dns-provider ${dnsProvider}";
+    in
     pkgs.writeShellScript "acme-dns-proxy-${domain}" ''
       # parse the command passed by the client.
       #
@@ -40,7 +50,7 @@ let
       ''}
 
       # run the script to modify the DNS
-      ${execCommand} "$action" "$fqdn" "$record"
+      ${doModifyDns} "$action" "$fqdn" "$record"
     '';
 in
 {

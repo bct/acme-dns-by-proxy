@@ -35,16 +35,31 @@
                 example = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMi/bg+PkUxp5XmisRyxcmeI5cUjST0AJ0+xleFFAIZg user@client";
               };
 
+              dnsProvider = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  DNS Challenge provider. For a list of supported providers, see the "code" field of the DNS providers listed at https://go-acme.github.io/lego/dns/.
+
+                  Mutually exclusive with `execCommand`.
+                '';
+              };
+
               execCommand = mkOption {
-                type = types.oneOf [
-                  types.str
-                  types.path
-                ];
+                type = types.nullOr (
+                  types.oneOf [
+                    types.str
+                    types.path
+                  ]
+                );
+                default = null;
                 description = ''
                   A command that will be executed when the authorized client uses this proxy.
 
                   This command should expect the arguments of a lego "External Command" DNS provider:
                   https://go-acme.github.io/lego/dns/exec/index.html#commands
+
+                  Mutually exclusive with `dnsProvider`.
                 '';
               };
 

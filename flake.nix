@@ -26,9 +26,16 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          inherit (nixpkgs) lib;
         in
         {
           doc = pkgs.callPackage ./pkgs/doc.nix { };
+
+          lego-dns-provider = pkgs.buildGoModule {
+            name = "lego-dns-provider";
+            src = lib.cleanSource ./lego-dns-provider;
+            vendorHash = "sha256-iPGsfdf6po2eSVWCXv6Xd2ZVe1Vpvf+xUgfWE1V5+v8=";
+          };
         }
       );
 

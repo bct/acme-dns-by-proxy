@@ -63,17 +63,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if operation == "present" {
+	switch operation {
+	case "present":
 		err := provider.Present(ctx, info.Domain(), "", keyAuth)
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else if operation == "cleanup" {
+	case "cleanup":
 		err := provider.CleanUp(ctx, info.Domain(), "", keyAuth)
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else {
+	default:
 		log.Fatalf("unrecognized operation %v", operation)
 	}
 }

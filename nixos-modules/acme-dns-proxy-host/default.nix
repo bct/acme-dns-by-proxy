@@ -15,6 +15,7 @@ let
       environmentFile,
       execCommand,
       dnsProvider,
+      rawMode,
       ...
     }:
     let
@@ -23,6 +24,7 @@ let
           execCommand
         else
           "${flakePackages.lego-dns-provider}/bin/lego-dns-provider ${dnsProvider}";
+      authorizedDomain = if rawMode then domain else "_acme-challenge.${domain}.";
     in
     pkgs.writeShellScript "acme-dns-proxy-${domain}" ''
       # parse the command passed by the client.
@@ -30,10 +32,15 @@ let
       # SSH_ORIGINAL_COMMAND is the arguments passed to a lego "External Command"
       # https://go-acme.github.io/lego/dns/exec/index.html#commands
       IFS=" "
-      read action fqdn record <<<$SSH_ORIGINAL_COMMAND
+      ${
+        if rawMode then
+          "read action dashdash fqdn token record <<<$SSH_ORIGINAL_COMMAND"
+        else
+          "read action fqdn record <<<$SSH_ORIGINAL_COMMAND"
+      }
 
       # validate that this client is allowed to access this domain.
-      authorized_fqdn="_acme-challenge.${domain}."
+      authorized_fqdn="${authorizedDomain}"
       if [ "$fqdn" != "$authorized_fqdn" ]; then
         echo "this key is authorized to modify the domain \"$authorized_fqdn\""
         echo "refusing to proxy request for \"$fqdn\""
@@ -50,7 +57,12 @@ let
       ''}
 
       # run the script to modify the DNS
-      ${doModifyDns} "$action" "$fqdn" "$record"
+      ${
+        if rawMode then
+          "${doModifyDns} \"$action\" \"$fqdn\" \"$token\" \"$record\""
+        else
+          "${doModifyDns} \"$action\" \"$fqdn\" \"$record\""
+      }
     '';
 in
 {

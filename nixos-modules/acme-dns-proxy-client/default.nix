@@ -34,7 +34,8 @@ in
           ACME_DNS_PROXY_REMOTE_USER = proxy.remoteUser;
           ACME_DNS_PROXY_HOST = proxy.host;
           ACME_DNS_PROXY_IDENTITY = proxy.sshIdentity;
-        };
+        }
+        // lib.optionalAttrs proxy.rawMode { EXEC_MODE = "RAW"; };
       }
     ) config.security.acme.dnsChallengeProxies;
 

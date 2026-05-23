@@ -16,7 +16,7 @@
     domains = mkOption {
       type = types.listOf (
         types.submodule (
-          { ... }:
+          { config, ... }:
           {
             options = {
               domain = mkOption {
@@ -68,6 +68,19 @@
                 default = null;
                 description = ''
                   A Bash file that will be `source`d to provide additional environment variables (e.g. secrets).
+                '';
+              };
+
+              rawMode = mkOption {
+                type = types.bool;
+                default = config.dnsProvider != null;
+                description = ''
+                  Pass the raw domain and key authorization string to the `execCommand`?
+
+                  If false, the domain will look like _acme-challenge.your-domain.example, and the authorization string will be the exact string that should be set on the TXT record.
+                  If true, the domain will look like your-domain.example, and the authorization string will need to be SHA256ed before setting the TXT record.
+
+                  Must be `true` to use `dnsProvider`.
                 '';
               };
             };

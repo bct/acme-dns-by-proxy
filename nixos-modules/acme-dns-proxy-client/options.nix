@@ -53,6 +53,19 @@
                   The path to the SSH client private key that the proxy has authorized to modify this domain.
                 '';
               };
+
+              rawMode = mkOption {
+                type = lib.types.bool;
+                default = false;
+                description = ''
+                  Pass the raw domain and key authorization string to the proxy?
+
+                  If false, the domain will look like _acme-challenge.your-domain.example, and the authorization string will be the exact string that should be set on the TXT record.
+                  If true, the domain will look like your-domain.example, and the authorization string will need to be SHA256ed before setting the TXT record.
+
+                  Must be `true` to use `dnsProvider` on the host.
+                '';
+              };
             };
           }
         )

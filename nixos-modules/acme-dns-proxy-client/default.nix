@@ -8,7 +8,7 @@ self:
 }:
 let
   proxyClient = pkgs.writeShellScript "acme-dns-proxy-client" ''
-    ${pkgs.openssh}/bin/ssh -v -i "$ACME_DNS_PROXY_IDENTITY" "$ACME_DNS_PROXY_REMOTE_USER"@"$ACME_DNS_PROXY_HOST" "$@"
+    ${pkgs.openssh}/bin/ssh -i "$ACME_DNS_PROXY_IDENTITY" "$ACME_DNS_PROXY_REMOTE_USER"@"$ACME_DNS_PROXY_HOST" "$@"
   '';
 
   hostKeys = lib.mapAttrs' (

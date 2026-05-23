@@ -2,79 +2,79 @@ package main
 
 import (
 	"context"
-	"crypto"
 	"flag"
 	"fmt"
+	"github.com/go-acme/lego/v5/providers/dns"
 	"log"
 	"os"
-
-	"github.com/go-acme/lego/v5/acme"
-	"github.com/go-acme/lego/v5/challenge/dns01"
-	"github.com/go-acme/lego/v5/providers/dns"
 )
 
-// You'll need a user or account type that implements acme.User
-type Account struct {
-	Email        string
-	Registration *acme.ExtendedAccount
-	key          crypto.Signer
-}
+func runProvider(providerName, operation, domain, token, keyAuth string) error {
+	provider, err := dns.NewDNSChallengeProviderByName(providerName)
+	if err != nil {
+		return err
+	}
 
-func (u *Account) GetEmail() string {
-	return u.Email
-}
+	ctx := context.Background()
+	switch operation {
+	case "present":
+		err := provider.Present(ctx, domain, "", keyAuth)
+		if err != nil {
+			return err
+		}
+	case "cleanup":
+		err := provider.CleanUp(ctx, domain, "", keyAuth)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("unrecognized operation %v", operation)
+	}
 
-func (u *Account) GetRegistration() *acme.ExtendedAccount {
-	return u.Registration
-}
-
-func (u *Account) GetPrivateKey() crypto.Signer {
-	return u.key
+	return nil
 }
 
 func main() {
 	flag.Parse()
 
+	// we accept the same arguments as the "External Program" provider, in RAW mode.
 	// see: https://go-acme.github.io/lego/dns/exec/#commands
-	args := flag.Args()
-	if len(args) != 4 {
+	origArgs := flag.Args()
+
+	// ignore "--" in the argument list.
+	// lego RAW mode adds this in; it's irrelevant since we don't accept any arguments anyhow.
+	args := make([]string, 0, len(origArgs))
+	for _, arg := range origArgs {
+		if arg != "--" {
+			args = append(args, arg)
+		}
+	}
+
+	if len(args) != 5 {
 		fmt.Printf(`usage:
-		%s PROVIDER present FQDN RECORD 
-		%s PROVIDER cleanup FQDN RECORD 
+		%s PROVIDER present DOMAIN TOKEN RECORD
+		%s PROVIDER cleanup DOMAIN TOKEN RECORD
 `, os.Args[0], os.Args[0])
 		os.Exit(1)
 	}
 
+	// https://go-acme.github.io/lego/dns/index.html
 	providerName := args[0]
+
+	// "present" or "cleanup"
 	operation := args[1]
 
+	// your-domain.example.
 	domain := args[2]
-	keyAuth := args[3]
 
-	provider, err := dns.NewDNSChallengeProviderByName(providerName)
+	// not used for DNS-01 challenges?
+	token := args[3]
+
+	// an opaque string
+	keyAuth := args[4]
+
+	err := runProvider(providerName, operation, domain, token, keyAuth)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	ctx := context.Background()
-
-	info := dns01.GetChallengeInfo(ctx, domain, keyAuth)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	switch operation {
-	case "present":
-		err := provider.Present(ctx, info.Domain(), "", keyAuth)
-		if err != nil {
-			log.Fatal(err)
-		}
-	case "cleanup":
-		err := provider.CleanUp(ctx, info.Domain(), "", keyAuth)
-		if err != nil {
-			log.Fatal(err)
-		}
-	default:
-		log.Fatalf("unrecognized operation %v", operation)
 	}
 }

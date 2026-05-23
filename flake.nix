@@ -34,7 +34,7 @@
           lego-dns-provider = pkgs.buildGoModule {
             name = "lego-dns-provider";
             src = lib.cleanSource ./lego-dns-provider;
-            vendorHash = "sha256-iPGsfdf6po2eSVWCXv6Xd2ZVe1Vpvf+xUgfWE1V5+v8=";
+            vendorHash = "sha256-A/t3ItMhYVCXmwZsR7ZcWAGwICp5Oh3Wt7/fMDgpw4M=";
           };
         }
       );

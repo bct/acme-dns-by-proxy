@@ -2,7 +2,10 @@ module lego-dns-provider
 
 go 1.25.5
 
-require github.com/go-acme/lego/v5 v5.0.4
+require (
+	github.com/go-acme/lego/v5 v5.0.4
+	github.com/stretchr/testify v1.11.1
+)
 
 require (
 	cloud.google.com/go/auth v0.20.0 // indirect
@@ -163,7 +166,6 @@ require (
 	github.com/spf13/pflag v1.0.7 // indirect
 	github.com/spf13/viper v1.18.2 // indirect
 	github.com/stretchr/objx v0.5.3 // indirect
-	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.94 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect

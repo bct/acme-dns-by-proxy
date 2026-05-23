@@ -47,8 +47,7 @@ in
 
   testScript = ''
     def ssh_command(domain, keyfile="/root/.ssh/id_ed25519"):
-      fqdn = f"_acme-challenge.{domain}."
-      return f"ssh acme-dns-proxy@host -i {keyfile} -- present {fqdn} some-token"
+      return f"ssh acme-dns-proxy@host -i {keyfile} -- present -- {domain} some-token Iu5cheer"
 
     start_all()
 
@@ -74,7 +73,7 @@ in
 
     # check what was successfully executed
     t.assertEqual(
-      "present _acme-challenge.authorized-subdomain.example.org. some-token\n",
+      "present _acme-challenge.authorized-subdomain.example.org. 5oUOMvfJy448xr3AEkDttrV7dU4vjobaH_K3XUvwH7Q\n",
       host.succeed("cat /tmp/proxy-requests")
     )
   '';

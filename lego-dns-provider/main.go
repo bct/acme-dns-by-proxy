@@ -28,7 +28,7 @@ func runProvider(providerName, operation, domain, token, keyAuth string) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("unrecognized operation %v", operation)
+		return fmt.Errorf("unrecognized operation: %s", operation)
 	}
 
 	return nil
